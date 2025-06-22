@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет о продажах</title>
+    <style type="text/css">
+        body { font-family: Arial; font-size: 12px; }
+        h1 { color: #333; text-align: center; font-size: 18px; }
+        .period { text-align: center; margin-bottom: 20px; }
+        .section { margin-bottom: 30px; }
+        .section-title { font-size: 14px; font-weight: bold; margin-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 5px; text-align: left; font-size: 12px; }
+        th { background-color: #f2f2f2; }
+        .stat-item { margin-bottom: 8px; }
+        .stat-value { font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>Отчет о продажах</h1>
+    <div class="period">
+        Период: с {{ start_date|date:"d.m.Y" }} по {{ end_date|date:"d.m.Y" }}
+    </div>
+
+    <div class="section">
+        <div class="section-title">Общая статистика</div>
+        <div class="stat-item">Общая выручка: <span class="stat-value">{{ total_revenue }} KZT</span></div>
+        <div class="stat-item">Количество заказов: <span class="stat-value">{{ order_count }}</span></div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Топ-5 клиентов по выручке</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Клиент</th>
+                    <th>Компания</th>
+                    <th>Сумма заказов</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for customer in top_customers %}
+                <tr>
+                    <td>{{ customer.full_name }}</td>
+                    <td>{{ customer.company_name|default:"-" }}</td>
+                    <td>{{ customer.total_spent }} KZT</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Самые популярные товары</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Товар</th>
+                    <th>Количество продаж</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in popular_products %}
+                <tr>
+                    <td>{{ product.product__name }}</td>
+                    <td>{{ product.total_quantity }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <div class="section-title">Все заказы за период</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>№</th>
+                    <th>Дата</th>
+                    <th>Клиент</th>
+                    <th>Сумма</th>
+                    <th>Статус</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                <tr>
+                    <td>{{ order.id }}</td>
+                    <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+                    <td>{{ order.customer.full_name }}</td>
+                    <td>{{ order.total_amount }} KZT</td>
+                    <td>{{ order.get_status_display }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
