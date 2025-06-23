@@ -1,0 +1,44 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Отчет о продажах</title>
+    <style>
+        body { font-family: sans-serif; }
+        table { border-collapse: collapse; width: 100%; margin-top: 1em; }
+        th, td { border: 1px solid #aaa; padding: 6px; }
+        h1, h2 { margin-bottom: 0.3em; }
+    </style>
+</head>
+<body>
+    <h1>Отчет о продажах</h1>
+    <p>Период: {{ start_date }} — {{ end_date }}</p>
+    <p><strong>Общая выручка:</strong> {{ total_revenue }}</p>
+    <p><strong>Количество заказов:</strong> {{ order_count }}</p>
+
+    <h2>Топ-5 клиентов</h2>
+    <ul>
+    {% for c in top_customers %}
+        <li>{{ c.customer__full_name }} — {{ c.total }}</li>
+    {% endfor %}
+    </ul>
+
+    <h2>Самый популярный товар</h2>
+    <p>{{ popular_product }}</p>
+
+    <h2>Все заказы</h2>
+    <table>
+      <thead>
+        <tr><th>Дата</th><th>Клиент</th><th>Сумма</th><th>Статус</th></tr>
+      </thead>
+      <tbody>
+      {% for o in orders %}
+        <tr>
+          <td>{{ o.date }}</td>
+          <td>{{ o.customer }}</td>
+          <td>{{ o.sum }}</td>
+          <td>{{ o.status }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+</body>

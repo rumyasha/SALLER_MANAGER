@@ -1,0 +1,41 @@
+<form method="post" novalidate>
+  {% csrf_token %}
+  {{ form.non_field_errors }}
+  <div>
+    {{ form.customer.label_tag }}<br>
+    {{ form.customer }}
+    {{ form.customer.errors }}
+  </div>
+  <div>
+    {{ form.status.label_tag }}<br>
+    {{ form.status }}
+    {{ form.status.errors }}
+  </div>
+
+  <h3>Позиции заказа</h3>
+  {{ formset.management_form }}
+  {% for f in formset.forms %}
+    <div class="item-block">
+      {{ f.non_field_errors }}
+      <div>
+        {{ f.product.label_tag }} {{ f.product }} {{ f.product.errors }}
+      </div>
+      <div>
+        {{ f.quantity.label_tag }} {{ f.quantity }} {{ f.quantity.errors }}
+      </div>
+      <div>
+        {{ f.price.label_tag }} {{ f.price }} {{ f.price.errors }}
+      </div>
+      <div>
+        {{ f.discount_percent.label_tag }} {{ f.discount_percent }} {{ f.discount_percent.errors }}
+      </div>
+      {% if formset.can_delete %}
+        <div>
+          {{ f.DELETE }} <label for="{{ f.DELETE.id_for_label }}">Удалить</label>
+        </div>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <button type="submit">Сохранить заказ</button>
+</form>

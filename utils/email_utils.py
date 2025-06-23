@@ -1,6 +1,6 @@
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
-from utils.pdf_utils import generate_pdf
+from utils.pdf_utils import generate_sales_report
 
 
 def send_order_confirmation(order):
@@ -15,7 +15,7 @@ def send_order_confirmation(order):
     html_content = render_to_string('emails/order_confirmation.html', {'order': order})
 
     # PDF версия
-    pdf_file = generate_pdf('reports/order_details.html', {'order': order})
+    pdf_file = generate_sales_report('reports/order_details.html', {'order': order})
 
     email = EmailMultiAlternatives(subject, text_content, from_email, to)
     email.attach_alternative(html_content, "text/html")

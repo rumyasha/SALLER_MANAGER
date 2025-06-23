@@ -1,34 +1,31 @@
 from django import forms
-from products.models import Product
-from .models import OrderItem, Order
+from django.forms import inlineformset_factory
+from .models import Order, OrderItem
+
+class OrderForm(forms.ModelForm):
+    class Meta:
+        model = Order
+        fields = ['customer', 'status']
+        widgets = {
+            'customer': forms.Select(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
 
 class OrderItemForm(forms.ModelForm):
     class Meta:
         model = OrderItem
-        fields = ['product', 'quantity', 'discount_percent']  # Явно указываем поля
+        fields = ['product', 'quantity', 'price', 'discount_percent']  # добавили price
         widgets = {
             'product': forms.Select(attrs={'class': 'form-control'}),
-            'quantity': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 1
-            }),
-            'discount_percent': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'min': 0,
-                'max': 100,
-                'step': 0.1
-            }),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control', 'min': 1}),
+            'price': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
+            'discount_percent': forms.NumberInput(attrs={'class': 'form-control', 'min': 0, 'max': 100, 'step': 0.1}),
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['product'].queryset = Product.objects.all()
-
-OrderItemFormSet = forms.inlineformset_factory(
+OrderItemFormSet = inlineformset_factory(
     Order,
     OrderItem,
     form=OrderItemForm,
-    fields=['product', 'quantity', 'discount_percent'],  # Явно указываем поля здесь
     extra=1,
     can_delete=True,
     min_num=1,
